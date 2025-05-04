@@ -26,6 +26,7 @@
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
+            <th>id</th>
             <th>Date</th>
             <th>Description</th>
             <th>Calories</th>
@@ -34,8 +35,9 @@
         </tr>
         </thead>
         <c:forEach items="${requestScope.meals}" var="meal">
-            <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+            <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
+                <td>${meal.id}</td>
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                         <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
