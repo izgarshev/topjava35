@@ -7,6 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
@@ -15,7 +16,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -73,8 +76,12 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals",
-                        MealsUtil.getTos(controller.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                LocalDate startDate = DateTimeUtil.parseLocalDate(request.getParameter("startDate"));
+                LocalDate endDate = DateTimeUtil.parseLocalDate(request.getParameter("endDate"));
+                LocalTime startTime = DateTimeUtil.parseLocalTime(request.getParameter("startTime"));
+                LocalTime endTime = DateTimeUtil.parseLocalTime(request.getParameter("endTime"));
+                log.info("startDate: {}, endDate: {}, startTime: {}, endTime: {}", startDate, endDate, startTime, endTime);
+                request.setAttribute("meals", controller.getAll(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
