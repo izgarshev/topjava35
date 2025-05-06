@@ -1,7 +1,12 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -26,8 +31,26 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@Ignore
+//@Ignore
 public class MealServiceTest {
+
+    private final static StringBuilder sb = new StringBuilder("\nTEST RESULT:\n");
+
+    @Rule
+    public final TestRule watchman = new TestWatcher() {
+        private final long start = System.currentTimeMillis();
+        @Override
+        protected void finished(Description description) {
+            String text = description.getMethodName() + " finished for " + (System.currentTimeMillis() - start) + "ms";
+            sb.append(text).append("\n");
+            System.out.println(text);
+        }
+    };
+
+    @AfterClass
+    public static void showResult() {
+        System.out.println(sb);
+    }
 
     @Autowired
     private MealService service;
