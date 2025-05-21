@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.HttpRequestHandler;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 
 @Controller
 @RequestMapping("/meals")
@@ -28,6 +31,12 @@ public class JspMealController {
     public String getAll(Model model) {
         log.info("get all meals");
         model.addAttribute("meals", MealsUtil.getTos(mealService.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay()));
+        return "meals";
+    }
+
+    @GetMapping("/filter")
+    public String getAllFiltered(Model model) {
+        log.info("get filtered meals");
         return "meals";
     }
 
@@ -60,7 +69,17 @@ public class JspMealController {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-        mealService.update(meal, SecurityUtil.authUserId());
+        if (StringUtils.hasLength(request.getParameter("id"))) {
+            assureIdConsistent(meal, getId(request));
+            mealService.update(meal, SecurityUtil.authUserId());
+        } else {
+            mealService.create(meal, SecurityUtil.authUserId());
+        }
         return "redirect:meals";
+    }
+
+    private int getId(HttpServletRequest request) {
+        String paramId = Objects.requireNonNull(request.getParameter("id"));
+        return Integer.parseInt(paramId);
     }
 }
