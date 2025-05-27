@@ -41,11 +41,11 @@ class RootControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals", new AssertionMatcher<List<MealTo>>() {
+                .andExpect(model().attribute("meals", new AssertionMatcher<List<Meal>>() {
                     @Override
-                    public void assertion(List<MealTo> actual) throws AssertionError {
-//                        System.out.println("actual: " + actual);
-//                        MEAL_MATCHER.assertMatch(actual, MealsUtil.getTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                    public void assertion(List<Meal> actual) throws AssertionError {
+                        System.out.println("actual: " + actual);
+                        MEAL_MATCHER.assertMatch(actual, meal7, meal6, meal5, meal4, meal3, meal2, meal1);
                     }
                 }));
     }
