@@ -13,10 +13,15 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
 
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 
 @Controller
@@ -35,8 +40,14 @@ public class JspMealController {
     }
 
     @GetMapping("/filter")
-    public String getAllFiltered(Model model) {
+    public String getAllFiltered(HttpServletRequest request, Model model) {
         log.info("get filtered meals");
+        LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
+        LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
+        LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
+        LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
+        List<Meal> betweenInclusive = mealService.getBetweenInclusive(startDate, endDate, SecurityUtil.authUserId());
+        model.addAttribute("meals", MealsUtil.getFilteredTos(betweenInclusive, SecurityUtil.authUserCaloriesPerDay(), startTime, endTime));
         return "meals";
     }
 
