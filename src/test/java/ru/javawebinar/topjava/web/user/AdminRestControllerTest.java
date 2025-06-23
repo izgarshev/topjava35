@@ -13,9 +13,10 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.javawebinar.topjava.MealTestData.meals;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 
 class AdminRestControllerTest extends AbstractControllerTest {
 
@@ -82,5 +83,18 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(admin, guest, user));
+    }
+
+    @Test
+    void getWithMeals() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "with-meals"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(user.getMeals(), getTos(meals, user.getCaloriesPerDay()));
+    }
+
+    @Test
+    void getAdminWithMeals() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"));
     }
 }
