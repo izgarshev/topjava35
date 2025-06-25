@@ -1,6 +1,7 @@
 let form;
 
 function makeEditable(datatableApi) {
+    console.log("make editable " + datatableApi);
     ctx.datatableApi = datatableApi;
     form = $('#detailsForm');
     $(".delete").click(function () {
@@ -18,11 +19,13 @@ function makeEditable(datatableApi) {
 }
 
 function add() {
+    console.log("add");
     form.find(":input").val("");
     $("#editRow").modal();
 }
 
 function deleteRow(id) {
+    console.log("delete row");
     $.ajax({
         url: ctx.ajaxUrl + id,
         type: "DELETE"
