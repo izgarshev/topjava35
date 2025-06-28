@@ -49,4 +49,10 @@ $(function () {
             ]
         })
     );
+    $("#clearFilter").click(function (e) {
+        console.log("click")
+        e.preventDefault();
+        $("#filter").get(0).reset();
+        updateTable();
+    });
 });

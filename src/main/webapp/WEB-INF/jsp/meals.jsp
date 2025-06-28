@@ -38,7 +38,7 @@
                 </form>
             </div>
             <div class="card-footer text-right">
-                <button class="btn btn-danger" onclick="closeNoty()">
+                <button class="btn btn-danger" id="clearFilter">
                     <span class="fa fa-remove"></span>
                     <spring:message code="common.cancel"/>
                 </button>
